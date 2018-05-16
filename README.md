@@ -14,4 +14,4 @@ master主线代码用于本地MacOs的开发环境
     mysql-5.1.72
     
     
-push代码到master版本和分支版本时需要修改logback.xml、datasource.properties文件中的内容(此处后期需要做修改，环境应该一致)
+push代码到master版本和分支版本时需要修改logback.xml、datasource.properties、pom文件中的内容(此处后期需要做修改，环境应该一致)
