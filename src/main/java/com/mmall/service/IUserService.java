@@ -86,4 +86,9 @@ public interface IUserService {
      * @return
      */
     ServerResponse checkAdminRole(User user);
+
+    /**
+     * 赋予管理员权限
+     */
+    public ServerResponse<String> authorization(String username);
 }

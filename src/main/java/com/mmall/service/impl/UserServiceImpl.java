@@ -43,8 +43,8 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<User> register(User user) {
-        //校验参数、前端必须同时传用户username、password和role
-        if (StringUtils.isBlank(user.getUsername()) || StringUtils.isBlank(user.getPassword()) || Objects.isNull(user.getRole())) {
+        //校验参数、前端必须同时传用户username、password
+        if (StringUtils.isBlank(user.getUsername()) || StringUtils.isBlank(user.getPassword())) {
             return  ServerResponse.createByErrorMessage("必填参数不完整!");
         }
         //校验用户名是否存在
@@ -58,9 +58,10 @@ public class UserServiceImpl implements IUserService {
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
-        //user.setRole(Const.Role.ROLE_CUSTOMER);
         //md5加密
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
+        //所有注册用户只能是普通用户
+        user.setRole(Const.Role.ROLE_CUSTOMER);
         int resultCount = userMapper.insert(user);
         if(resultCount == 0) {
             return ServerResponse.createByErrorMessage("注册失败");
@@ -221,5 +222,24 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    /**
+     * 授权
+     * @param username
+     * @return
+     */
+    @Override
+    public ServerResponse<String> authorization(String username) {
+        User user = userMapper.selectUserByUsername(username);
+        if (Objects.isNull(user)) {
+            return ServerResponse.createByErrorMessage("被授权的账号不存在!");
+        }
+        user.setRole(Const.Role.ROLE_ADMIN);
+        int updateCount = userMapper.updateByPrimaryKeySelective(user);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccessMessage("授权成功!");
+        }
+        return ServerResponse.createByErrorMessage("更新用户信息出错!");
     }
 }

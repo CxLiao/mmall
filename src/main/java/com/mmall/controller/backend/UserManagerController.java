@@ -2,8 +2,10 @@ package com.mmall.controller.backend;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
+import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 /**
  * @author liaocx on 2017/11/30.
@@ -44,5 +47,18 @@ public class UserManagerController {
             }
         }
         return response;
+    }
+
+    /**
+     * admin账号拥有授权的权限
+     */
+    @RequestMapping(value = "authorization.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> authorization(HttpSession session, String username) {
+        User admin =(User) session.getAttribute(Const.CURRENT_USER);
+        if (admin.getUsername().equals(Const.Role.ROOT)) {
+            return iUserService.authorization(username);
+        }
+        return ServerResponse.createByErrorMessage("请使用admin账号执行此操作!");
     }
 }

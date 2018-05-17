@@ -148,23 +148,23 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="checkUsername" resultType="int" parameterType="string">
+  <select id="checkUsername" resultType="java.lang.Integer" parameterType="string">
     select count(1) from mmall_user
     where username = #{username} <!--# 防止sql注入-->
   </select>
 
-  <select id="checkEmail" resultType="int" parameterType="string">
+  <select id="checkEmail" resultType="java.lang.Integer" parameterType="string">
     select count(1) from mmall_user
     where email = #{email} <!--# 防止sql注入-->
   </select>
 
-  <select id="checkEmailByUserId" resultType="int" parameterType="map">
+  <select id="checkEmailByUserId" resultType="java.lang.Integer" parameterType="map">
     SELECT count(1) from mmall_user
     WHERE email = #{email}
       and id != #{userId}
   </select>
 
-  <select id="checkPhoneByUserId" resultType="int" parameterType="map">
+  <select id="checkPhoneByUserId" resultType="java.lang.Integer" parameterType="map">
     SELECT count(1) from mmall_user
     WHERE phone = #{email}
     and id != #{userId}
@@ -177,13 +177,20 @@
     and password = #{password}
   </select>
 
-  <select id="selectQuestionByUsername" resultType="string" parameterType="string">
+  <select id="selectUserByUsername" resultMap="BaseResultMap" parameterType="map">
+    select <include refid="Base_Column_List" />
+    from mmall_user
+    where username = #{username}
+    and password = #{password}
+  </select>
+
+  <select id="selectQuestionByUsername" resultType="java.lang.String" parameterType="string">
     SELECT question
     FROM mmall_user
     WHERE username = #{username}
   </select>
 
-  <select id="checkAnswer" resultType="int" parameterType="map">
+  <select id="checkAnswer" resultType="java.lang.Integer" parameterType="map">
     SELECT COUNT(1)
     FROM mmall_user
     WHERE username = #{username}
@@ -197,7 +204,7 @@
     WHERE username = #{username}
   </update>
   
-  <select id="checkPassword" resultType="int" parameterType="map">
+  <select id="checkPassword" resultType="java.lang.Integer" parameterType="map">
     SELECT COUNT(1)
     FROM mmall_user
     WHERE password = #{password}

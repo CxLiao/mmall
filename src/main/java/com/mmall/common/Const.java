@@ -21,6 +21,8 @@ public class Const {
     }
 
     public interface Role { //这样做更有一个group的概念
+
+        String ROOT = "admin";
         /**
          * 普通用户
          */
