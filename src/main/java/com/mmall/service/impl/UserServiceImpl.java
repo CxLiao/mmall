@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -37,12 +38,15 @@ public class UserServiceImpl implements IUserService {
         }
         //密码置空，需要将user对象中的密码置空 以免返回给前端
         user.setPassword(StringUtils.EMPTY);
-        return ServerResponse.createBySuccess("登录成功",user);
+        return ServerResponse.createBySuccess("登录成功", user);
     }
 
-
     @Override
-    public ServerResponse<String> register(User user) {
+    public ServerResponse<User> register(User user) {
+        //校验参数、前端必须同时传用户username、password和role
+        if (StringUtils.isBlank(user.getUsername()) || StringUtils.isBlank(user.getPassword()) || Objects.isNull(user.getRole())) {
+            return  ServerResponse.createByErrorMessage("必填参数不完整!");
+        }
         //校验用户名是否存在
         ServerResponse validResponse = this.checkValid(user.getUsername(), Const.USERNAME);
         if (!validResponse.isSuccess()) {
@@ -54,14 +58,15 @@ public class UserServiceImpl implements IUserService {
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
-        user.setRole(Const.Role.ROLE_CUSTOMER);
+        //user.setRole(Const.Role.ROLE_CUSTOMER);
         //md5加密
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
         int resultCount = userMapper.insert(user);
         if(resultCount == 0) {
             return ServerResponse.createByErrorMessage("注册失败");
         }
-        return ServerResponse.createBySuccessMessage("注册成功");
+        user.setPassword(StringUtils.EMPTY);
+        return ServerResponse.createBySuccess("注册成功", user);
     }
 
     @Override
@@ -82,7 +87,6 @@ public class UserServiceImpl implements IUserService {
                     return ServerResponse.createByErrorMessage("Email已存在");
                 }
             }
-
         } else {
             return ServerResponse.createByErrorMessage("参数错误");
         }

@@ -58,11 +58,11 @@ public class UserController {
     /**
      * 用户注册
      * @param user
-     * @return
+     * @return 注册成功将返回新注册的UserEntity
      */
     @RequestMapping(value = "register.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> register(User user) {
+    public ServerResponse<User> register(User user) {
         return iUserService.register(user);
     }
 
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     /**
-     * check密码提示问题的答案
+     * 校验密码提示问题的答案
      * @param username
      * @param question
      * @param answer
@@ -118,7 +118,7 @@ public class UserController {
     }
 
     /**
-     * 重置密码
+     * 忘记密码后通过密码提示问题重置密码
      * @param username
      * @param passwordNew
      * @param forgetToken
