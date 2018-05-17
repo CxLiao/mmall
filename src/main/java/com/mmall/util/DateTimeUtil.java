@@ -11,9 +11,7 @@ import java.util.Date;
  * @author liaocx
  */
 public class DateTimeUtil {
-
     //joda-time
-
     //str->Date
     //Date->str
     /**

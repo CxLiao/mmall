@@ -23,6 +23,7 @@ public class OrderManageController {
 
     @Autowired
     private IUserService iUserService;
+
     @Autowired
     private IOrderService iOrderService;
 
@@ -71,7 +72,6 @@ public class OrderManageController {
         }
     }
 
-
     /**
      * 后台搜索订单功能
      * @param session
@@ -96,7 +96,6 @@ public class OrderManageController {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
     }
-
 
     /**
      * 发货功能
