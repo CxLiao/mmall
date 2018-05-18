@@ -30,12 +30,11 @@ public class UserController {
      * @param httpSession
      * @return
      */
-    @RequestMapping(value = "login.do",method = RequestMethod.POST)
+    @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody /**该注解用于将Controller的方法返回的对象，根据HTTP Request Header的Accept的内容,
                     通过适当的HttpMessageConverter转换为指定格式后，写入到Response对象的body数据区。
                   使用时机：返回的数据不是html标签的页面，而是其他某种格式的数据时（如json、xml等）使用；*/
-    public ServerResponse<User> login(String username, String password, HttpSession httpSession){
-        /*service -> mybatis -> dao*/
+    public ServerResponse<User> login(String username, String password, HttpSession httpSession) {
         ServerResponse<User> response = iUserService.login(username,password);
         if (response.isSuccess()) {
             httpSession.setAttribute(Const.CURRENT_USER,response.getData());
@@ -48,7 +47,7 @@ public class UserController {
      * @param httpSession
      * @return
      */
-    @RequestMapping(value = "logout.do",method = RequestMethod.POST)
+    @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> logout(HttpSession httpSession) {
         httpSession.removeAttribute(Const.CURRENT_USER);
@@ -58,9 +57,9 @@ public class UserController {
     /**
      * 用户注册
      * @param user
-     * @return 注册成功将返回新注册的UserEntity
+     * @return 注册成功将返回刚注册的UserEntity
      */
-    @RequestMapping(value = "register.do",method = RequestMethod.POST)
+    @RequestMapping(value = "register.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> register(User user) {
         return iUserService.register(user);
@@ -72,7 +71,7 @@ public class UserController {
      * @param type
      * @return
      */
-    @RequestMapping(value = "check_valid.do",method = RequestMethod.POST)
+    @RequestMapping(value = "check_valid.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> checkValid(String str, String type) {
         return iUserService.checkValid(str, type);
@@ -83,7 +82,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
+    @RequestMapping(value = "get_user_info.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpSession session) {
         User user =(User) session.getAttribute(Const.CURRENT_USER);
@@ -98,7 +97,7 @@ public class UserController {
      * @param username
      * @return
      */
-    @RequestMapping(value = "forget_get_question.do",method = RequestMethod.POST)
+    @RequestMapping(value = "forget_get_question.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username) {
         return iUserService.selectQuestion(username);
@@ -111,9 +110,9 @@ public class UserController {
      * @param answer
      * @return 核对成功后返回一个forgetToken
      */
-    @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
+    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetCheckAnswer(String username,String question,String answer) {
+    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
         return iUserService.checkAnswer(username, question, answer);
     }
 
@@ -124,9 +123,9 @@ public class UserController {
      * @param forgetToken
      * @return
      */
-    @RequestMapping(value = "forget_reset_password.do",method = RequestMethod.POST)
+    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetResetPassword(String username,String passwordNew,String forgetToken) {
+    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         return iUserService.forgetResetPassword(username,passwordNew,forgetToken);
     }
 
@@ -137,9 +136,9 @@ public class UserController {
      * @param passwordNew
      * @return
      */
-    @RequestMapping(value = "reset_password.do",method = RequestMethod.POST)
+    @RequestMapping(value = "reset_password.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> resetPassword(HttpSession httpSession,String passwordOld,String passwordNew) {
+    public ServerResponse<String> resetPassword(HttpSession httpSession, String passwordOld, String passwordNew) {
         User user = (User) httpSession.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -153,9 +152,9 @@ public class UserController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "update_information.do",method = RequestMethod.POST)
+    @RequestMapping(value = "update_information.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> updateInformation(HttpSession httpSession,User user) {
+    public ServerResponse<User> updateInformation(HttpSession httpSession, User user) {
         User currentUser = (User) httpSession.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -179,7 +178,7 @@ public class UserController {
      * @param httpSession
      * @return
      */
-    @RequestMapping(value = "get_information.do",method = RequestMethod.POST)
+    @RequestMapping(value = "get_information.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> getInformation(HttpSession httpSession) {
         User currentUser = (User) httpSession.getAttribute(Const.CURRENT_USER);

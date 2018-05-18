@@ -32,15 +32,14 @@ public class UserManagerController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "login.do",method = RequestMethod.POST)
+    @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session) {
         ServerResponse<User> response = iUserService.login(username,password);
         if (response.isSuccess()) {
             User user = response.getData();
             if (user.getRole() == Const.Role.ROLE_ADMIN) {
-                //登录的是管理员用户
-                session.setAttribute(Const.CURRENT_USER,user);
+                session.setAttribute(Const.CURRENT_USER, user);
                 return response;
             } else {
                 return ServerResponse.createByErrorMessage("不是管理员，无法登录");
@@ -52,7 +51,7 @@ public class UserManagerController {
     /**
      * admin账号拥有授权的权限
      */
-    @RequestMapping(value = "authorization.do",method = RequestMethod.POST)
+    @RequestMapping(value = "authorization.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> authorization(HttpSession session, String username) {
         User admin =(User) session.getAttribute(Const.CURRENT_USER);

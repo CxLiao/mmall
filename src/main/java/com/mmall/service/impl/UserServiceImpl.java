@@ -74,18 +74,16 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<String> checkValid(String str, String type) {
         if(StringUtils.isNotBlank(type)) {
             //开始校验
-            //username
             if (Const.USERNAME.equals(type)) {
                 int resultCount = userMapper.checkUsername(str);
                 if(resultCount > 0) {
-                    return ServerResponse.createByErrorMessage("用户名已存在");
+                    return ServerResponse.createByErrorMessage("用户名已存在!");
                 }
             }
-            //email
             if (Const.EMAIL.equals(type)) {
                 int resultCount = userMapper.checkEmail(str);
                 if(resultCount > 0) {
-                    return ServerResponse.createByErrorMessage("Email已存在");
+                    return ServerResponse.createByErrorMessage("Email已存在!");
                 }
             }
         } else {
@@ -111,11 +109,10 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<String> checkAnswer(String username,String question,String answer) {
         int resultCount = userMapper.checkAnswer(username,question,answer);
         if (resultCount > 0) {
-            //说明问题及问题答案是这个用户的，并且正确
-            //生成类似dc64a334-7812-4d23-ad7c-d8e13dc08d7f这样的值
+            //校验成功、生成类似dc64a334-7812-4d23-ad7c-d8e13dc08d7f这样的值
             String forgetToken = UUID.randomUUID().toString();
             //将forgetToken放到本地cache中
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username,forgetToken);
+            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题的答案错误");
@@ -126,7 +123,7 @@ public class UserServiceImpl implements IUserService {
         /*校验参数*/
         // 检查forgetToken是否为空
         if (StringUtils.isBlank(forgetToken)) {
-            return ServerResponse.createByErrorMessage("参数错误,Token需要传递");
+            return ServerResponse.createByErrorMessage("参数错误,需要传递Token");
         }
         //检查username是否存在
         ServerResponse validResponse = this.checkValid(username,Const.USERNAME);
@@ -137,9 +134,9 @@ public class UserServiceImpl implements IUserService {
         String getToken = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
         //验证从cache中获取的token是否为空
         if (StringUtils.isBlank(getToken)) {
-            return ServerResponse.createByErrorMessage("token无效或者过期");
+            return ServerResponse.createByErrorMessage("token不存在或者已过期");
         }
-        if (StringUtils.equals(forgetToken,getToken)) {
+        if (StringUtils.equals(forgetToken, getToken)) {
             /*开始重置密码*/
             //将参数中的passwordNew生成md5加密的字符串
             String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
@@ -147,10 +144,10 @@ public class UserServiceImpl implements IUserService {
             int rowCount = userMapper.updatePasswordByUsername(username,md5Password);
             if (rowCount > 0) {
                 //重置密码成功
-                return ServerResponse.createBySuccessMessage("修改密码成功");
+                TokenCache.remove(TokenCache.TOKEN_PREFIX + username);
+                return ServerResponse.createBySuccessMessage("修改密码成功!");
             }
         } else {
-            //StringUtils.equals(forgetToken,getToken)条件为false
             return ServerResponse.createByErrorMessage("token错误,请重新获取重置密码的token");
         }
         //rowCount > 0判断条件为false
@@ -209,8 +206,8 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccess(user);
     }
 
+    /**backend*/
 
-    //backend
     /**
      * 校验是否是管理员
      * @param user
