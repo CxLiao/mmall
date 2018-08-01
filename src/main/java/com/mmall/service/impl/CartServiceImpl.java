@@ -34,9 +34,9 @@ public class CartServiceImpl implements ICartService {
     private ProductMapper productMapper;
 
     @Override
-    public ServerResponse<CartVo> add(Integer userId,Integer productId,Integer count){
+    public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count){
         if (productId == null || count == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
         if (cart == null){
@@ -58,9 +58,9 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public ServerResponse<CartVo> update(Integer userId,Integer productId,Integer count){
+    public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count){
         if (productId == null || count == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
         if (cart != null){
@@ -75,9 +75,9 @@ public class CartServiceImpl implements ICartService {
     public ServerResponse<CartVo> deleteProduct(Integer userId, String productIds){
         List<String> productList = Splitter.on(",").splitToList(productIds);
         if (CollectionUtils.isEmpty(productList)){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
-        cartMapper.deletByUserIdProductIds(userId,productList);
+        cartMapper.deletByUserIdProductIds(userId, productList);
         return this.list(userId);
     }
 
@@ -90,7 +90,7 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
-    public ServerResponse<CartVo> selectOrUnSelectProduct(Integer userId,Integer productId,Integer checked){
+    public ServerResponse<CartVo> selectOrUnSelectProduct(Integer userId, Integer productId, Integer checked){
         cartMapper.checkedOrUncheckedProduct(userId,productId,checked);
         return this.list(userId);
     }
@@ -141,11 +141,11 @@ public class CartServiceImpl implements ICartService {
                     }
                     cartProductVo.setQuantity(buyLimitCount);
                     //计算总价 =productId的商品总价
-                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(cartProductVo.getQuantity().doubleValue(),product.getPrice().doubleValue()));
+                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(cartProductVo.getQuantity().doubleValue(), product.getPrice().doubleValue()));
                     cartProductVo.setProductChecked(cartItem.getChecked());
                     if (cartItem.getChecked() == Const.Cart.CHECKED){
                         //！！！如果已经勾选，增加到整个的购物车总价中去
-                        cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(),cartProductVo.getProductTotalPrice().doubleValue());
+                        cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
                     }
                 }
                 cartProductVoList.add(cartProductVo);

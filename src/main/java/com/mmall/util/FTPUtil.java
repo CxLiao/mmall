@@ -43,18 +43,18 @@ public class FTPUtil {
     }
 
     public static boolean uploadFile(List<File> fileList) throws IOException {
-        FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
+        FTPUtil ftpUtil = new FTPUtil(ftpIp, 21, ftpUser, ftpPass);
         log.info("开始连接FTP服务器");
-        boolean result = ftpUtil.uploadFile("img",fileList);
+        boolean result = ftpUtil.uploadFile("img", fileList);
         log.info("开始连接FTP服务器，结束上传，上传结果{}");
         return result;
     }
 
-    private boolean uploadFile(String remotePath,List<File> fileList) throws IOException {
+    private boolean uploadFile(String remotePath, List<File> fileList) throws IOException {
         boolean uploaded = false;
         FileInputStream fis = null;
         //连接FTP服务器
-        if (connectServer(this.ip,this.port,this.user,this.pwd)) {
+        if (connectServer(this.ip, this.port, this.user, this.pwd)) {
             try {
                 ftpClient.changeWorkingDirectory(remotePath);
                 ftpClient.setBufferSize(1024);
@@ -63,7 +63,7 @@ public class FTPUtil {
                 ftpClient.enterLocalPassiveMode();
                 for (File fileItem : fileList) {
                     fis = new FileInputStream(fileItem);
-                    ftpClient.storeFile(fileItem.getName(),fis);
+                    ftpClient.storeFile(fileItem.getName(), fis);
                 }
                 uploaded = true;
             } catch (IOException e) {
@@ -77,14 +77,14 @@ public class FTPUtil {
         return uploaded;
     }
 
-    private boolean connectServer(String ip,int port,String user,String pwd) {
+    private boolean connectServer(String ip, int port, String user, String pwd) {
         boolean isSuccess = false;
         ftpClient = new FTPClient();
         try {
             ftpClient.connect(ip);
-            isSuccess = ftpClient.login(user,pwd);
+            isSuccess = ftpClient.login(user, pwd);
         } catch (IOException e) {
-            log.error("连接FTP服务器异常",e);
+            log.error("连接FTP服务器异常", e);
         }
         return isSuccess;
     }

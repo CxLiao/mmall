@@ -17,6 +17,7 @@
     <context:property-placeholder location="classpath:datasource.properties"/>
 
     <import resource="applicationContext-datasource.xml"/>
-
+    <!-- 导入shiro配置文件-->
+    <import resource="applicationContext-shiro.xml"/>
 
 </beans>

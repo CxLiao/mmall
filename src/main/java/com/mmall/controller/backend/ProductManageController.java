@@ -52,7 +52,7 @@ public class ProductManageController {
     public ServerResponse productSave(HttpSession session, Product product) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充增加、更新产品的业务逻辑
@@ -71,7 +71,7 @@ public class ProductManageController {
      */
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ServerResponse setSaleStatus(HttpSession session, Integer productId,Integer status) {
+    public ServerResponse setSaleStatus(HttpSession session, Integer productId, Integer status) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
@@ -95,7 +95,7 @@ public class ProductManageController {
     public ServerResponse getDetail(HttpSession session, Integer productId) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务
@@ -117,7 +117,7 @@ public class ProductManageController {
     public ServerResponse getList(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,  @RequestParam(value = "pageSize",defaultValue = "10")int pageSize) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务
@@ -138,10 +138,10 @@ public class ProductManageController {
      */
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse productSearch(HttpSession session, String productName,Integer productId,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,  @RequestParam(value = "pageSize",defaultValue = "10")int pageSize) {
+    public ServerResponse productSearch(HttpSession session, String productName, Integer productId, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,  @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务
@@ -163,12 +163,12 @@ public class ProductManageController {
     public ServerResponse upload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务
             String path = request.getSession().getServletContext().getRealPath("upload");
-            String targetFileName = iFileService.upload(file,path);
+            String targetFileName = iFileService.upload(file, path);
             String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
             Map fileMap = Maps.newHashMap();
             fileMap.put("uri",targetFileName);
@@ -206,28 +206,28 @@ public class ProductManageController {
         Map resultMap = Maps.newHashMap();
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            resultMap.put("success",false);
-            resultMap.put("msg","请登录管理员");
+            resultMap.put("success", false);
+            resultMap.put("msg", "请登录管理员");
             return resultMap;
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务
             String path = request.getSession().getServletContext().getRealPath("upload");
-            String targetFileName = iFileService.upload(file,path);
+            String targetFileName = iFileService.upload(file, path);
             if (StringUtils.isBlank(targetFileName)) {
-                resultMap.put("success",false);
-                resultMap.put("msg","上传失败");
+                resultMap.put("success", false);
+                resultMap.put("msg", "上传失败");
                 return resultMap;
             }
             String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
-            resultMap.put("success",true);
-            resultMap.put("msg","上传成功");
-            resultMap.put("file_path",url);
-            response.addHeader("Access-Control-Allow-Headers","X-File-Name");
+            resultMap.put("success", true);
+            resultMap.put("msg", "上传成功");
+            resultMap.put("file_path", url);
+            response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
             return resultMap;
         } else {
-            resultMap.put("success",false);
-            resultMap.put("msg","无权限操作");
+            resultMap.put("success", false);
+            resultMap.put("msg", "无权限操作");
             return resultMap;
         }
     }

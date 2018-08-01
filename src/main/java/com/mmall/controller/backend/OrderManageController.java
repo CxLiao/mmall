@@ -41,7 +41,7 @@ public class OrderManageController {
                                @RequestParam(value = "pageSize",defaultValue = "10")int pageSize) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务逻辑
@@ -59,10 +59,10 @@ public class OrderManageController {
      */
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse orderDetail(HttpSession session,Long orderNo) {
+    public ServerResponse orderDetail(HttpSession session, Long orderNo) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务逻辑
@@ -87,11 +87,11 @@ public class OrderManageController {
                                       @RequestParam(value = "pageSize",defaultValue = "10")int pageSize) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务逻辑
-            return iOrderService.manageSearch(orderNo,pageNum,pageSize);
+            return iOrderService.manageSearch(orderNo, pageNum, pageSize);
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
@@ -105,10 +105,10 @@ public class OrderManageController {
      */
     @RequestMapping("send_goods.do")
     @ResponseBody
-    public ServerResponse orderSendGoods(HttpSession session,Long orderNo) {
+    public ServerResponse orderSendGoods(HttpSession session, Long orderNo) {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录管理员");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //填充业务逻辑

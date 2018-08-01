@@ -1,10 +1,12 @@
 package com.mmall.pojo;
 
 import lombok.*;
+
 import java.util.Date;
 
 /**
  * Category domain
+ *
  * @author liaocx on 2017/10/13.
  * @author liaocx 重写于2018/5/15 新增lombok注解
  */

@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 public class TokenCache {
 
     public static final String TOKEN_PREFIX = "token_";
-
     /**
      * 新建了名为localCache的一个缓存对象，maximumSize定义了缓存的容量大小，当缓存数量!即将!到达容量上线时，则会进行缓存回收，回收最近没有使用
      * 或总体上很少使用的缓存项。需要注意的是在接近这个容量上限时就会发生，所以在定义这个值的时候需要视情况适量地增大一点。

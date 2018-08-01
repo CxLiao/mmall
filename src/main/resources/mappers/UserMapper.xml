@@ -181,7 +181,6 @@
     select <include refid="Base_Column_List" />
     from mmall_user
     where username = #{username}
-    and password = #{password}
   </select>
 
   <select id="selectQuestionByUsername" resultType="java.lang.String" parameterType="string">

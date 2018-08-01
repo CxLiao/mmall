@@ -21,9 +21,9 @@ public interface UserMapper {
 
     int checkEmail(String email);
 
-    int checkEmailByUserId(@Param("email") String email,@Param("userId") Integer userId);
+    int checkEmailByUserId(@Param("email") String email, @Param("userId") Integer userId);
 
-    int checkPhoneByUserId(@Param("phone") String phone,@Param("userId") Integer userId);
+    int checkPhoneByUserId(@Param("phone") String phone, @Param("userId") Integer userId);
 
     User selectLogin(@Param("username") String username, @Param("password") String password);
 
@@ -33,7 +33,7 @@ public interface UserMapper {
 
     int checkAnswer(@Param("username") String username, @Param("question") String question, @Param("answer")String answer);
 
-    int updatePasswordByUsername(@Param("username") String username,@Param("passwordNew") String passwordNew);
+    int updatePasswordByUsername(@Param("username") String username, @Param("passwordNew") String passwordNew);
 
-    int checkPassword(@Param("password") String password,@Param("userId") Integer userId);
+    int checkPassword(@Param("password") String password, @Param("userId") Integer userId);
 }

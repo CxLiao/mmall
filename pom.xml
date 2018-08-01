@@ -246,12 +246,23 @@
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok-->
-    <!--scope声明为provided来说明lombok包在编译的时候不会打进war包中-->
+    <!--scope声明为provided来保证lombok包在编译的时候不会打进war包中-->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.16.18</version>
       <scope>provided</scope>
+    </dependency>
+    <!-- shiro-->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-spring</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-ehcache</artifactId>
+      <version>1.3.2</version>
     </dependency>
   </dependencies>
 

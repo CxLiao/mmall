@@ -6,8 +6,14 @@ import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
-import com.mmall.util.MD5Util;
+import com.mmall.util.CryptoUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +25,7 @@ import java.util.UUID;
  * @date 2017/10/16
  */
 @Service("iUserService")
+@Slf4j
 public class UserServiceImpl implements IUserService {
 
     @Autowired
@@ -26,19 +33,22 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<User> login(String username, String password) {
-        int resultCount = userMapper.checkUsername(username);
-        if(resultCount == 0) {
-            return ServerResponse.createByErrorMessage("用户名不存在");
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+            subject.login(token);
+            User loginUser = (User) SecurityUtils.getSubject().getPrincipal();
+            loginUser.setPassword(StringUtils.EMPTY);
+            return ServerResponse.createBySuccess("登录成功", loginUser);
+        } catch (UnknownAccountException e) {
+            log.error("printStackTrace:", e);
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("用户名不存在!");
+        } catch (IncorrectCredentialsException e) {
+            log.error("printStackTrace:", e);
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("密码错误!");
         }
-        String md5Password = MD5Util.MD5EncodeUtf8(password);
-        User user = userMapper.selectLogin(username,md5Password);
-        if (user == null){
-            //用户名不存在已在上面检验过，逻辑到这用户肯定存在，因此这里user为null是因为密码的问题
-             return ServerResponse.createByErrorMessage("密码错误");
-        }
-        //密码置空，需要将user对象中的密码置空 以免返回给前端
-        user.setPassword(StringUtils.EMPTY);
-        return ServerResponse.createBySuccess("登录成功", user);
     }
 
     @Override
@@ -58,8 +68,8 @@ public class UserServiceImpl implements IUserService {
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
-        //md5加密
-        user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
+        //SHA-384加密
+        user.setPassword(CryptoUtil.getSHA384(user.getPassword()));
         //所有注册用户只能是普通用户
         user.setRole(Const.Role.ROLE_CUSTOMER);
         int resultCount = userMapper.insert(user);
@@ -106,8 +116,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ServerResponse<String> checkAnswer(String username,String question,String answer) {
-        int resultCount = userMapper.checkAnswer(username,question,answer);
+    public ServerResponse<String> checkAnswer(String username, String question, String answer) {
+        int resultCount = userMapper.checkAnswer(username, question, answer);
         if (resultCount > 0) {
             //校验成功、生成类似dc64a334-7812-4d23-ad7c-d8e13dc08d7f这样的值
             String forgetToken = UUID.randomUUID().toString();
@@ -119,14 +129,14 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ServerResponse<String> forgetResetPassword(String username,String passwordNew,String forgetToken) {
+    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         /*校验参数*/
         // 检查forgetToken是否为空
         if (StringUtils.isBlank(forgetToken)) {
             return ServerResponse.createByErrorMessage("参数错误,需要传递Token");
         }
         //检查username是否存在
-        ServerResponse validResponse = this.checkValid(username,Const.USERNAME);
+        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
         if (validResponse.isSuccess()) {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
@@ -138,10 +148,8 @@ public class UserServiceImpl implements IUserService {
         }
         if (StringUtils.equals(forgetToken, getToken)) {
             /*开始重置密码*/
-            //将参数中的passwordNew生成md5加密的字符串
-            String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
-            //在数据库中重置密码,返回影响行数
-            int rowCount = userMapper.updatePasswordByUsername(username,md5Password);
+            //将参数中的passwordNew生成sha-384加密的字符串;在数据库中重置密码,返回影响行数
+            int rowCount = userMapper.updatePasswordByUsername(username, CryptoUtil.getSHA384(passwordNew));
             if (rowCount > 0) {
                 //重置密码成功
                 TokenCache.remove(TokenCache.TOKEN_PREFIX + username);
@@ -155,13 +163,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ServerResponse<String> resetPassword(String passwordOld,String passwordNew,User user) {
+    public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
         //防止横向越权，要验证一下用户的旧密码；一定要指定是这个用户，因为我们会查询一个count(1)，如果不指定userId，那结果很可能为true
-        int resultCount = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld),user.getId());
+        int resultCount = userMapper.checkPassword(CryptoUtil.getSHA384(passwordOld), user.getId());
         if (resultCount == 0) {
             return ServerResponse.createByErrorMessage("旧密码错误");
         }
-        user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
+        user.setPassword(CryptoUtil.getSHA384(passwordNew));
         int updateCount = userMapper.updateByPrimaryKeySelective(user);
         if (updateCount > 0) {
             return ServerResponse.createBySuccessMessage("密码更新成功");
@@ -173,7 +181,7 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<User> updateInformation(User user) {
         //username不能更新
         //email要进行校验，校验新的email是否存在，如果存在不能是当前用户的（逻辑错误）
-        int resultCount = userMapper.checkEmailByUserId(user.getEmail(),user.getId());
+        int resultCount = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
         if (resultCount > 0) {
             return ServerResponse.createByErrorMessage("email已存在，请更换email再尝试更新");
         }
@@ -188,9 +196,8 @@ public class UserServiceImpl implements IUserService {
             //重新去获取了数据库的数据，用这个拥有完整信息的updateUser，去填充session中的current_user（密码已经置空）
             //确保session中信息更完整
             updateUser = userMapper.selectByPrimaryKey(updateUser.getId());
-            //置空的是updateUser里的password的值 数据库中没变
             updateUser.setPassword(StringUtils.EMPTY);
-            return ServerResponse.createBySuccess("更新个人信息成功",updateUser);
+            return ServerResponse.createBySuccess("更新个人信息成功", updateUser);
         }
         return ServerResponse.createByErrorMessage("更新个人信息失败");
     }
@@ -201,13 +208,12 @@ public class UserServiceImpl implements IUserService {
         if (user == null) {
             return ServerResponse.createByErrorMessage("找不到当前用户");
         }
-        //!!!密码置空
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
     }
 
-    /**backend*/
 
+    /**backend*/
     /**
      * 校验是否是管理员
      * @param user

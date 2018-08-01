@@ -5,6 +5,8 @@ import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +19,7 @@ import javax.servlet.http.HttpSession;
  * @author liaocx on 2017/10/16.
  */
 @Controller
-@RequestMapping("/user/")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -31,13 +33,13 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
-    @ResponseBody /**该注解用于将Controller的方法返回的对象，根据HTTP Request Header的Accept的内容,
+    @ResponseBody /**该注解用于将Controller方法返回的对象，根据HTTP Request Header的Accept的内容,
                     通过适当的HttpMessageConverter转换为指定格式后，写入到Response对象的body数据区。
                   使用时机：返回的数据不是html标签的页面，而是其他某种格式的数据时（如json、xml等）使用；*/
     public ServerResponse<User> login(String username, String password, HttpSession httpSession) {
-        ServerResponse<User> response = iUserService.login(username,password);
+        ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
-            httpSession.setAttribute(Const.CURRENT_USER,response.getData());
+            httpSession.setAttribute(Const.CURRENT_USER, response.getData());
         }
         return response;
     }
@@ -51,7 +53,8 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> logout(HttpSession httpSession) {
         httpSession.removeAttribute(Const.CURRENT_USER);
-        return ServerResponse.createBySuccess();
+        SecurityUtils.getSubject().logout();
+        return ServerResponse.createBySuccessMessage("退出登录成功!");
     }
 
     /**
@@ -126,7 +129,7 @@ public class UserController {
     @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
-        return iUserService.forgetResetPassword(username,passwordNew,forgetToken);
+        return iUserService.forgetResetPassword(username, passwordNew, forgetToken);
     }
 
     /**
@@ -143,7 +146,7 @@ public class UserController {
         if (user == null) {
             return ServerResponse.createByErrorMessage("用户未登录");
         }
-        return iUserService.resetPassword(passwordOld,passwordNew,user);
+        return iUserService.resetPassword(passwordOld, passwordNew, user);
     }
 
     /**
@@ -168,7 +171,7 @@ public class UserController {
             //！！！这样做保证写入httpsession中的username是正确的~~以当前登录用户为准。
             response.getData().setUsername(currentUser.getUsername());
             //!!!将返回信息放入httpsession
-            httpSession.setAttribute(Const.CURRENT_USER,response.getData());
+            httpSession.setAttribute(Const.CURRENT_USER, response.getData());
         }
         return response;
     }
