@@ -37,7 +37,7 @@ public class UserServiceImpl implements IUserService {
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken token = new UsernamePasswordToken(username, password);
             subject.login(token);
-            User loginUser = (User) SecurityUtils.getSubject().getPrincipal();
+            User loginUser = (User) subject.getPrincipal();
             loginUser.setPassword(StringUtils.EMPTY);
             return ServerResponse.createBySuccess("登录成功", loginUser);
         } catch (UnknownAccountException e) {

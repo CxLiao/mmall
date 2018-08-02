@@ -70,7 +70,8 @@ public class ShiroRealm extends AuthorizingRealm {
         if (Objects.isNull(user) || Objects.isNull(user.getId())) {
             throw new UnknownAccountException("无此账户");
         }
-        //若存在将此用户存放到登录认证info中，无需自己做密码对比，shiro会自动进行对比校验
+        // info中存放的是数据库中正确的账号信息，token参数包含了登录表单传递进来的待认证的信息
+        // shiro会自动进行对比校验：在SimpleCredentialsMatcher类的doCredentialsMatch()方法中做对比
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), getName());
         //设置盐值
         info.setCredentialsSalt(ByteSource.Util.bytes(CryptoUtil.getSalt()));

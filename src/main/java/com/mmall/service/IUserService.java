@@ -46,7 +46,7 @@ public interface IUserService {
      * @param answer
      * @return
      */
-    ServerResponse<String> checkAnswer(String username,String question,String answer);
+    ServerResponse<String> checkAnswer(String username, String question, String answer);
 
     /**
      * 未登录状态下通过forgetToken重置密码
@@ -55,7 +55,7 @@ public interface IUserService {
      * @param forgetToken
      * @return
      */
-    ServerResponse<String> forgetResetPassword(String username,String passwordNew,String forgetToken);
+    ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken);
 
     /**
      * 登录状态下调用的重置密码接口
@@ -64,7 +64,7 @@ public interface IUserService {
      * @param user
      * @return
      */
-    ServerResponse<String> resetPassword(String passwordOld,String passwordNew,User user);
+    ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
 
     /**
      * 登录状态下更新个人信息

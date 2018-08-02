@@ -16,6 +16,22 @@ SpringMVC上传图片
     <input type="file" name="upload_file" />
     <input type="submit" value="富文本上传图片" />
 </form>
-<%--<h3 style="bottom: 0; position: absolute">蜀ICP备18002440号</h3>--%>
-</body>
+
+<%--跨域测试:--%>
+<%--<div>--%>
+    <%--name : <input id = "name" value = "name">--%>
+    <%--pwd : <input id = "password" value = "password">--%>
+    <%--<br>--%>
+    <%--<button onclick = "login()">submit</button>--%>
+<%--</div>--%>
+<%--</body>--%>
+<%--<script>--%>
+    <%--function login(){--%>
+        <%--var xmlhttp = new XMLHttpRequest();--%>
+        <%--var userneme = document.getElementById('name').value;--%>
+        <%--var password = document.getElementById('password').value;--%>
+        <%--xmlhttp.open('post', 'http://localhost:8080/user/login.do?username=' + userneme + "&password=" + password, true);--%>
+        <%--xmlhttp.send();--%>
+    <%--}--%>
+<%--</script>--%>
 </html>
