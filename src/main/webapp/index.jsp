@@ -17,21 +17,21 @@ SpringMVC上传图片
     <input type="submit" value="富文本上传图片" />
 </form>
 
-<%--跨域测试:--%>
-<%--<div>--%>
-    <%--name : <input id = "name" value = "name">--%>
-    <%--pwd : <input id = "password" value = "password">--%>
-    <%--<br>--%>
-    <%--<button onclick = "login()">submit</button>--%>
-<%--</div>--%>
-<%--</body>--%>
-<%--<script>--%>
-    <%--function login(){--%>
-        <%--var xmlhttp = new XMLHttpRequest();--%>
-        <%--var userneme = document.getElementById('name').value;--%>
-        <%--var password = document.getElementById('password').value;--%>
-        <%--xmlhttp.open('post', 'http://localhost:8080/user/login.do?username=' + userneme + "&password=" + password, true);--%>
-        <%--xmlhttp.send();--%>
-    <%--}--%>
-<%--</script>--%>
+跨域测试:
+<div>
+    name : <input id = "name" value = "name">
+    pwd : <input id = "password" value = "password">
+    <br>
+    <button onclick = "login()">submit</button>
+</div>
+</body>
+<script>
+    function login(){
+        var xmlhttp = new XMLHttpRequest();
+        var userneme = document.getElementById('name').value;
+        var password = document.getElementById('password').value;
+        xmlhttp.open('post', 'http://localhost:8080/user/login.do?username=' + userneme + "&password=" + password, true);
+        xmlhttp.send();
+    }
+</script>
 </html>

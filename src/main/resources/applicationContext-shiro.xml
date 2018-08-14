@@ -12,7 +12,6 @@
         <property name="loginUrl" value="/user/unlogin.do" />
         <!-- 配置不授权URL地址 -->
         <property name="unauthorizedUrl" value="/user/unauthorized.do" />
-
         <!-- 基本系统级别权限配置 -->
         <!-- filterChainDefinitions的配置顺序为自上而下,以最上面的为准 -->
         <!-- anon表示可匿名使用,可以理解为匿名用户或游客，即非登录下可访问 -->
@@ -84,13 +83,13 @@
     </bean>
 
     <!-- 会话验证调度器 -->
-    <bean id="sessionValidationScheduler"  class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
         <property name="interval" value="1800000"/>
         <!-- 注入会话管理器 -->
         <property name="sessionManager" ref="sessionManager"/>
     </bean>
 
-    <!--&lt;!&ndash; rememberMe管理器 &ndash;&gt;-->
+    <!-- rememberMe管理器 -->
     <!--<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">-->
         <!--<property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>-->
         <!--&lt;!&ndash; 注入rememberMe的cookie &ndash;&gt;-->
