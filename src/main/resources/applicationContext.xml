@@ -12,7 +12,7 @@
     <context:component-scan base-package="com.mmall" annotation-config="true"/>
 
     <!--<context:annotation-config/>-->
-    <aop:aspectj-autoproxy/>
+    <aop:aspectj-autoproxy />
 
     <context:property-placeholder location="classpath:datasource.properties"/>
 
@@ -20,4 +20,9 @@
     <!-- 导入shiro配置文件-->
     <import resource="applicationContext-shiro.xml"/>
 
+    <!-- 开启事务注解驱动 -->
+    <tx:annotation-driven />
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
 </beans>

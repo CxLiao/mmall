@@ -59,13 +59,13 @@ public class ShiroRealm extends AuthorizingRealm {
 
     /**
      * 认证: 即登录
-     * @param authenticationToken
+     * @param inputUsernamePasswordToken
      * @return
      * @throws AuthenticationException
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken inputUsernamePasswordToken) throws AuthenticationException {
+        UsernamePasswordToken token = (UsernamePasswordToken) inputUsernamePasswordToken;
         User user = userMapper.selectUserByUsername(token.getUsername());
         if (Objects.isNull(user) || Objects.isNull(user.getId())) {
             throw new UnknownAccountException("无此账户");

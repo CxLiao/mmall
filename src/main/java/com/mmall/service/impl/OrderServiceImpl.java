@@ -1,5 +1,6 @@
 package com.mmall.service.impl;
 
+import com.alipay.api.AlipayRequest;
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.demo.trade.config.Configs;
@@ -362,18 +363,18 @@ public class OrderServiceImpl implements IOrderService {
 
     /*************支付*************/
     @Override
-    public ServerResponse pay(Long orderNo,Integer userId,String path){
+    public ServerResponse pay(Long orderNo, Integer userId, String path){
         Map<String,String> resultMap = Maps.newHashMap();
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null){
             return ServerResponse.createByErrorMessage("用户没有该订单");
         }
-        resultMap.put("orderNo",String.valueOf(order.getOrderNo()));
+        resultMap.put("orderNo", String.valueOf(order.getOrderNo()));
         // (必填) 商户网站订单系统中唯一订单号，64个字符以内，只能包含字母、数字、下划线，
         // 需保证商户系统端不能重复，建议通过数据库sequence生成，
         String outTradeNo = order.getOrderNo().toString();
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
-        String subject = new StringBuilder().append("happymmall扫码支付，订单号：").append(outTradeNo).toString();
+        String subject = new StringBuilder().append("mmall扫码支付，订单号：").append(outTradeNo).toString();
         // (必填) 订单总金额，单位为元，不能超过1亿元
         // 如果同时传入了【打折金额】,【不可打折金额】,【订单总金额】三者,则必须满足如下条件:【订单总金额】=【打折金额】+【不可打折金额】
         String totalAmount = order.getPayment().toString();
@@ -415,7 +416,6 @@ public class OrderServiceImpl implements IOrderService {
                 //支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))
                 .setGoodsDetailList(goodsDetailList);
-
         /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
          *  Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
          */
@@ -431,7 +431,6 @@ public class OrderServiceImpl implements IOrderService {
                 log.info("支付宝预下单成功: )");
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
-
                 File folder = new File(path);
                 if (!folder.exists()){
                     folder.setWritable(true);
@@ -476,7 +475,6 @@ public class OrderServiceImpl implements IOrderService {
             log.info("body:" + response.getBody());
         }
     }
-
 
     @Override
     public ServerResponse aliCallback(Map<String, String> params) {

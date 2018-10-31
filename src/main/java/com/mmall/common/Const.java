@@ -49,7 +49,7 @@ public class Const {
 
     public enum ProductStatusEnum {
         //商品状态
-        ON_SALE(1,"在线");
+        ON_SALE(1, "在线");
 
         private int code;
         private String value;

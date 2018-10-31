@@ -9,6 +9,7 @@ import com.mmall.pojo.Shipping;
 import com.mmall.service.IShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -27,17 +28,17 @@ public class ShippingServiceImpl implements IShippingService {
         //避免横向越权
         shipping.setUserId(userId);
         int rowCount = shippingMapper.insert(shipping);
-        if (rowCount > 0){
+        if (rowCount > 0) {
             Map result = Maps.newHashMap();
-            result.put("ShippingId",shipping.getId());
-            return ServerResponse.createBySuccess("新建地址成功",result);
+            result.put("ShippingId", shipping.getId());
+            return ServerResponse.createBySuccess("新建地址成功", result);
         }
         return ServerResponse.createByErrorMessage("新建地址失败");
     }
 
 
     @Override
-    public ServerResponse<String> delete(Integer userId,Integer shippingId){
+    public ServerResponse<String> delete(Integer userId, Integer shippingId){
         int resultCount = shippingMapper.deleteByShippingIdUserId(userId,shippingId);
         if (resultCount > 0){
             return ServerResponse.createBySuccess("删除地址成功");
@@ -58,7 +59,7 @@ public class ShippingServiceImpl implements IShippingService {
 
 
     @Override
-    public ServerResponse<Shipping> select(Integer userId,Integer shippingId){
+    public ServerResponse<Shipping> select(Integer userId, Integer shippingId){
         Shipping shipping = shippingMapper.selectByUserIdShippingId(userId, shippingId);
         if (shipping == null) {
             return ServerResponse.createByErrorMessage("无法查询到该地址");
@@ -67,7 +68,7 @@ public class ShippingServiceImpl implements IShippingService {
     }
 
     @Override
-    public ServerResponse<PageInfo> list(Integer userId,int pageNum,int pageSize) {
+    public ServerResponse<PageInfo> list(Integer userId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Shipping> shippingList = shippingMapper.selectByUserId(userId);
         PageInfo pageInfo = new PageInfo(shippingList);

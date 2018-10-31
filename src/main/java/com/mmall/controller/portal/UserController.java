@@ -25,6 +25,10 @@ public class UserController {
     @Autowired
     private IUserService iUserService;
 
+    @RequestMapping(value = "hello", method = RequestMethod.GET)
+    public String hello() {
+        return "hello world";
+    }
     /**
      * 用户登录
      * @param username

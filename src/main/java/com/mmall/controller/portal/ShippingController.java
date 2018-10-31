@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 public class ShippingController {
 
     @Autowired
-    private IShippingService iShippingService;
+    private IShippingService shippingService;
 
     /**
      *  新增收货地址
@@ -37,7 +37,7 @@ public class ShippingController {
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iShippingService.add(user.getId(), shipping);
+        return shippingService.add(user.getId(), shipping);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ShippingController {
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iShippingService.delete(user.getId(), shippingId);
+        return shippingService.delete(user.getId(), shippingId);
     }
 
     /**
@@ -69,7 +69,7 @@ public class ShippingController {
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iShippingService.update(user.getId(), shipping);
+        return shippingService.update(user.getId(), shipping);
     }
 
     /**
@@ -85,7 +85,7 @@ public class ShippingController {
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iShippingService.select(user.getId(), shippingId);
+        return shippingService.select(user.getId(), shippingId);
     }
 
     /**
@@ -104,6 +104,6 @@ public class ShippingController {
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iShippingService.list(user.getId(), pageNum, pageSize);
+        return shippingService.list(user.getId(), pageNum, pageSize);
     }
 }
